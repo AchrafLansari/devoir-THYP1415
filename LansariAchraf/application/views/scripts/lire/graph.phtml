@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+                
+	  	<script src="http://d3js.org/d3.v3.min.js"></script>
+  		<script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+	
+		<script type="text/javascript">
+
+			var dtMinute = d3.time.format("%j %Hh%M");
+			var arrGraph = [];
+			
+			function sauveEvent(idUti, idTag){
+				execAjax("ajoutevent?idUti="+idUti+"&idTag="+idTag);
+			}
+	
+			function execAjax(url){
+				//on crée l'objet ajax
+				if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+				  }else{// code for IE6, IE5
+				  	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				//on paramètre l'objet
+				xmlhttp.onreadystatechange=function(){
+				  if (xmlhttp.readyState==4 && xmlhttp.status==200){
+					  	var data = JSON.parse(xmlhttp.responseText);
+				    		//document.getElementById("rep_"+data.idUti).innerHTML=data.mess;
+						showGraph(data.idUti, data.histo);
+				    		
+				    }
+				}
+				xmlhttp.open("GET",url,true);
+				//en envoie la requête
+				xmlhttp.send();
+			}		
+			function showGraph(idUti, data){
+				//restructuration des data
+				data.forEach(function(d){
+					d.poids = Math.floor((Math.random() * 20) + 1);
+					var dt = new Date(d.maj);
+					d.minutes = dtMinute(dt);
+					});
+			
+				if(document.getElementById("graphTime"+idUti)){
+					var mg = arrGraph[idUti];
+					mg.data = data;
+					mg.draw();
+				}else{
+					var svg = dimple.newSvg("#rep_"+idUti, 590, 400);
+					svg.attr("id","graphTime"+idUti);				
+				      // Create and Position a Chart
+				      var myChart = new dimple.chart(svg, data);
+				      myChart.setBounds(60, 30, 500, 300);
+				      var x = myChart.addCategoryAxis("x", "minutes")
+				      myChart.addMeasureAxis("y", "poids");
+				      
+				
+				      // Order the x axis by date
+				      x.addOrderRule("maj");
+				
+				      // Min price will be green, middle price yellow and max red
+				      myChart.addColorAxis("tag_id", ["green", "yellow", "red"]);
+				
+				      // Add a thick line with markers
+				      var lines = myChart.addSeries(null, dimple.plot.line); 
+				      lines.lineWeight = 5;
+				      lines.lineMarkers = true;
+
+				      //conserve le graphique
+				      arrGraph[idUti] = myChart;
+					   // Draw the chart
+					    myChart.draw();
+				}			
+			
+			}			
+			
+			}
+		</script>
+	</head>
+	
+	<body>	
+
+            
+            <div id="chartContainer">
+                <script type="text/javascript">
+                  var svg = dimple.newSvg("#chartContainer", 590, 400);
+                  d3.tsv("/data/example_data.tsv", function (data) {
+                    var myChart = new dimple.chart(svg, data);
+                    myChart.setBounds(60, 30, 510, 330)
+                    myChart.addCategoryAxis("x", ["Price Tier", "Channel"]);
+                    myChart.addMeasureAxis("y", "Unit Sales");
+                    myChart.addSeries("Channel", dimple.plot.bar);
+                    myChart.addLegend(65, 10, 510, 20, "right");
+                    myChart.draw();
+                  });
+                </script>
+            </div>
+
+
+	</body>
+</html>

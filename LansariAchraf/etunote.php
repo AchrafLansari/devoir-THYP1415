@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+     <meta charset="utf-8">
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta content="" name="description">
+        <meta content="" name="author">
+        <link href="../../favicon.ico" rel="icon">
+        
+        <title> Trombinoscope thyp 2014/2015 </title>
+        <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/starter-template.css">
+       
+        <title></title>
+    </head>
+    <body>
+    
+        
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Trombinoscope</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Acceuil</a></li>
+            <li><a href="#about">Absence</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h2> Etudiants THYP14/15 :</h2>
+        <p class="lead"> 
+        <?php
+        
+        //charge le flux rss dans un objet PHP
+          $xml = simplexml_load_file('http://picasaweb.google.com/data/feed/base/user/107401320610499259896/albumid/6065229773950541889?alt=rss&kind=photo&authkey=Gv1sRgCNak7e60l-7VlgE&hl=fr');
+        
+              
+        foreach ($xml->channel->item as $tof) {
+           echo "<div class=organisation>";
+                echo "<img src='".$tof->enclosure["url"]."' class=photo alt='".$tof->title."' />";
+                echo "<div class =legend>".$tof->title."</div>";
+           echo "</div>";     
+        } ?>    
+        </p>
+        
+      </div>
+        <div class="orga-btn">
+            <button class="btn btn-lg btn-success" type="button" id="valider">Valider</button>
+            <button class="btn btn-lg btn-danger" type="button" id="vider">Vider</button>
+        </div>
+        <div id="btn_up">
+        
+            <img   width="40"  src="icones/fleche.png" />
+        
+        </div>
+      
+     <div style="display: none" class="alert alert-block alert-error"> 
+                                            <h4>Error</h4>
+                                            Mot de passe Non identiques.. 
+     </div>
+    
+    </div><!-- /.container -->
+    
+  
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script src="bootstrap-3.2.0-dist/js/gestion.js"></script>
+  
+    </body>
+</html>
+
+
+
+    
